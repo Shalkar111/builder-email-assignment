@@ -1,0 +1,66 @@
+@startuml
+skinparam classAttributeIconSize 0
+title Assignment 1 - Email Builder
+interface EmailBuilder {
+  +setFrom(from: String): EmailBuilder
+  +setTo(to: String): EmailBuilder
+  +setSubject(subject: String): EmailBuilder
+  +setBody(body: String): EmailBuilder
+}
+class EmailDirector {
+  +makeWelcomeEmail(builder: EmailBuilder): void
+  +makeOrderConfirmationEmail(builder: EmailBuilder): void
+}
+class EmailObjectBuilder <<final>> {
+  -draft: EmailDraft {final}
+  +setFrom(from: String): EmailObjectBuilder
+  +setTo(to: String): EmailObjectBuilder
+  +setSubject(subject: String): EmailObjectBuilder
+  +setBody(body: String): EmailObjectBuilder
+  +getResult(): Email
+}
+class EmailPreviewBuilder <<final>> {
+  -draft: EmailDraft {final}
+  -PREVIEW_TEMPLATE: String {static, final}
+  +setFrom(from: String): EmailPreviewBuilder
+  +setTo(to: String): EmailPreviewBuilder
+  +setSubject(subject: String): EmailPreviewBuilder
+  +setBody(body: String): EmailPreviewBuilder
+  +getResult(): String
+}
+class Email <<final, immutable>> {
+  -from: String {final}
+  -to: String {final}
+  -subject: String {final}
+  -body: String {final}
+  ~Email(draft: EmailDraft)
+  +getFrom(): String
+  +getTo(): String
+  +getSubject(): String
+  +getBody(): String
+  +toString(): String
+}
+class EmailDraft <<final, package-private>> {
+  ~from: String
+  ~to: String
+  ~subject: String
+  ~body: String
+  ~validate(): void
+}
+EmailDirector ..> EmailBuilder : construction steps
+EmailObjectBuilder ..|> EmailBuilder
+EmailPreviewBuilder ..|> EmailBuilder
+EmailObjectBuilder *-- "1" EmailDraft : owns
+EmailPreviewBuilder *-- "1" EmailDraft : owns
+EmailObjectBuilder ..> Email : creates
+Email ..> EmailDraft : copies values at construction
+note bottom of EmailPreviewBuilder
+  getResult() returns an immutable String.
+  No Email object is built here.
+end note
+note bottom of Email
+  Main is the client: it creates both builders,
+  calls the director, and reads both results.
+  Private constants and validation helpers omitted.
+end note
+@enduml
