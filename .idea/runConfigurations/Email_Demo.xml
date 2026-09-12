@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Email Demo" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="assignment.builder.Main" />
+    <module name="Builder-Email-Assignment" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
